@@ -22,6 +22,12 @@ void test_Parsing_valid_smolcert(void) {
 
   sc_error_t sc_err = sc_parse_certificate((const uint8_t *)&expected_cert_bytes, sizeof(expected_cert_bytes), cert);
   TEST_ASSERT_EQUAL(Sc_No_Error, sc_err);
+
+  TEST_ASSERT_EQUAL_UINT64(12, cert->serial_number);
+  TEST_ASSERT_EQUAL_STRING("connctd", cert->issuer);
+  TEST_ASSERT_EQUAL_STRING("connctd", cert->subject);
+  TEST_ASSERT_EQUAL_UINT64(1576108145, cert->validity.not_after);
+  TEST_ASSERT_EQUAL_UINT64(1576021745, cert->validity.not_before);
 }
 
 int main(void) {
