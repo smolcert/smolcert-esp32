@@ -28,6 +28,8 @@ void test_Parsing_valid_smolcert(void) {
   TEST_ASSERT_EQUAL_STRING("connctd", cert->subject);
   TEST_ASSERT_EQUAL_UINT64(1576108145, cert->validity.not_after);
   TEST_ASSERT_EQUAL_UINT64(1576021745, cert->validity.not_before);
+
+  sc_free_cert(cert);
 }
 
 int main(void) {
