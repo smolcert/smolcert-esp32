@@ -128,14 +128,14 @@ $(RESULTS_TEST):
 
 .PHONEY:print
 print:
-	@echo -e "=============\nRUNNING TESTS:\n============="
-	@echo -e "-------------\nIGNORES:\n--------------"
+	@echo "=============\nRUNNING TESTS:\n============="
+	@echo "-------------\nIGNORES:\n--------------"
 	grep -s IGNORE $(RESULTS_TEST)
-	@echo -e "-------------\nFAILURES:\n--------------"
+	@echo "-------------\nFAILURES:\n--------------"
 	grep -s FAIL $(RESULTS_TEST)
-	@echo -e "-------------\nSUCCESSES:\n--------------"
+	@echo "-------------\nSUCCESSES:\n--------------"
 	grep -s PASS $(RESULTS_TEST)
-	@echo -e "\nDONE"
+	@echo "\nDONE"
 
 .PHONEY:clean
 clean:
