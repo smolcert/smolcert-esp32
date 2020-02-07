@@ -53,8 +53,8 @@ CFLAGS += -DUNITY_FIXTURES
 # PATHS
 #####################################################
 #app
-PATH_APP_SRC = src/
-PATH_TINY_CBOR = tinycbor/src/
+PATH_APP_SRC = $(COMPONENT_SRCDIRS)
+PATH_APP_INC = $(COMPONENT_ADD_INCLUDEDIRS) $(COMPONENT_PRIV_INCLUDEDIRS)
 #tests
 PATH_TEST_SRC = test/
 PATH_TEST_RUNNERS = $(PATH_TEST_SRC)runner/
@@ -78,8 +78,8 @@ BUILD_THE_PATHS     =\
 #####################################################
 SOURCE_TEST = $(wildcard $(PATH_TEST_SRC)*.c)
 SOURCE_TEST_RUNNERS = $(wildcard $(PATH_TEST_RUNNERS)*.c)
-SOURCE_APP = $(wildcard $(PATH_APP_SRC)*.c)
-SOURCE_TINY_CBOR = $(wildcard $(PATH_TINY_CBOR)*.c)
+SOURCE_APP = $(foreach src_dir, $(PATH_APP_SRC), $(wildcard $(src_dir)/*.c)) #$(wildcard $(scr_dir)/*.c)
+APP_INC_DIRS = $(foreach inc_dir, $(PATH_APP_INC), -I$(inc_dir))
 
 #####################################################
 # RESULTS 
@@ -91,7 +91,6 @@ TARGET1 = $(PATH_BUILD)$(TARGET_BASE1)$(TARGET_EXTENSION)
 SRC_FILES1=\
   $(PATH_UNITY_ROOT)src/unity.c \
   $(PATH_UNITY_ROOT)extras/fixture/src/unity_fixture.c \
-	$(SOURCE_TINY_CBOR) \
   $(SOURCE_APP) \
   $(SOURCE_TEST) \
   $(SOURCE_TEST_RUNNERS)
@@ -99,14 +98,13 @@ SRC_FILES1=\
 INC_DIRS= -I$(PATH_UNITY_ROOT)src \
 	-I$(PATH_UNITY_ROOT)extras/fixture/src \
 	-I$(PATH_UNITY_ROOT)extras/memory/src \
-	-I$(COMPONENT_ADD_INCLUDEDIRS) \
-	-I$(COMPONENT_PRIV_INCLUDEDIRS)
+	$(APP_INC_DIRS)
 SYMBOLS=
 
 all: clean default print
 
 debug:
-	@echo "$(INC_DIRS)"
+	@echo "$(APP_INC_DIRS)"
 
 RESULTS=$(RESULTS_TEST)
 
