@@ -104,7 +104,7 @@ SYMBOLS=
 all: clean default print
 
 debug:
-	@echo "$(APP_INC_DIRS)"
+	@echo "$(RESULTS_TEST)"
 
 RESULTS=$(RESULTS_TEST)
 
@@ -130,11 +130,11 @@ $(RESULTS_TEST):
 print:
 	@echo "=============\nRUNNING TESTS:\n============="
 	@echo "-------------\nIGNORES:\n--------------"
-	grep -s IGNORE $(RESULTS_TEST)
+	@grep IGNORE $(RESULTS_TEST) || true
 	@echo "-------------\nFAILURES:\n--------------"
-	grep -s FAIL $(RESULTS_TEST)
+	@grep FAIL $(RESULTS_TEST) || true
 	@echo "-------------\nSUCCESSES:\n--------------"
-	grep -s PASS $(RESULTS_TEST)
+	@grep PASS $(RESULTS_TEST) || true
 	@echo "\nDONE"
 
 .PHONEY:clean
