@@ -12,7 +12,7 @@ sc_error_t parse_validity(CborValue* it, sc_validity_t* validity);
 sc_error_t parse_extension(CborValue *it, sc_extension_t* extension);
 sc_error_t parse_extensions(CborValue *it, sc_extension_t** extensions, size_t* extensions_len);
 
-sc_error_t sc_parse_certificate(const uint8_t *buffer, size_t size, smolcert_t* cert) {
+sc_error_t sc_parse_certificate(const uint8_t* buffer, size_t size, smolcert_t* cert) {
   CborParser parser;
   CborValue it;
   CborError err = cbor_parser_init(buffer, size, 0, &parser, &it);
