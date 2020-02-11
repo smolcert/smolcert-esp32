@@ -49,12 +49,19 @@ CFLAGS += -Wmissing-prototypes
 CFLAGS += -Wmissing-declarations
 CFLAGS += -DUNITY_FIXTURES
 
+CFLAGS += -Wno-unused-parameter
+
 #####################################################
 # PATHS
 #####################################################
+
+# libraries
+APP_LIBRARIES = sodium
+
 #app
 PATH_APP_SRC = $(COMPONENT_SRCDIRS)
 PATH_APP_INC = $(COMPONENT_ADD_INCLUDEDIRS) $(COMPONENT_PRIV_INCLUDEDIRS)
+        
 #tests
 PATH_TEST_SRC = test/
 PATH_TEST_RUNNERS = $(PATH_TEST_SRC)runner/
@@ -80,6 +87,7 @@ SOURCE_TEST = $(wildcard $(PATH_TEST_SRC)*.c)
 SOURCE_TEST_RUNNERS = $(wildcard $(PATH_TEST_RUNNERS)*.c)
 SOURCE_APP = $(foreach src_dir, $(PATH_APP_SRC), $(wildcard $(src_dir)/*.c)) #$(wildcard $(scr_dir)/*.c)
 APP_INC_DIRS = $(foreach inc_dir, $(PATH_APP_INC), -I$(inc_dir))
+LIBRARY_FLAGS = $(foreach lib, $(APP_LIBRARIES), -l$(lib))
 
 #####################################################
 # RESULTS 
@@ -123,7 +131,7 @@ $(PATH_BUILD_DEPENDS):
 	$(MKDIR) $(PATH_BUILD_DEPENDS)
 
 $(RESULTS_TEST):
-	$(COMPILE) $(CFLAGS) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES1) -o $(TARGET1)
+	$(COMPILE) $(CFLAGS) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES1) $(LIBRARY_FLAGS) -o $(TARGET1)
 	./$(TARGET1) -v > $@ 2>&1
 
 .PHONEY:print
