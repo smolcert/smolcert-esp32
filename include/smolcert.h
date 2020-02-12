@@ -12,6 +12,8 @@
 extern "C" {
 #endif
 
+// sc_error defines error codes for smolcert. These codes are devided into ranges for different categories 
+// of errors.
 typedef enum sc_error {
   Sc_No_Error = 0,
   Sc_Unknown_Error,
@@ -47,10 +49,18 @@ typedef struct smolcert {
   size_t extensions_len;
 } smolcert_t;
 
+// sc_parse_certificate deserializes a smolcert from the given byte buffer. It will only deserialize
+// and ensure a valid format. It will not do any validations.
 sc_error_t sc_parse_certificate(const uint8_t* buffer, size_t size, smolcert_t* cert);
 
+// sc_validate_certificate_signature can validate a serialized certificate with a given public key.
+// This method does not require to parse the certificate and should be the fastest way to check a
+// signature if the certificate exists as byte buffer.
 sc_error_t sc_validate_certificate_signature(uint8_t* cert_buf, size_t cert_len, uint8_t* pub_key);
 
+// sc_free_cert frees the memory occupied by a smolcert. It will properly free all strings, lists etc.
+// inside the smolcert structure. You should never simply call 'free' on a smolcert as this poses
+// the danger of leaking memory.
 void sc_free_cert(smolcert_t* cert);
 
 #ifdef __cplusplus
