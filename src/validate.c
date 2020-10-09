@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <sodium.h>
 
 #include "smolcert.h"

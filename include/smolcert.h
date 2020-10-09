@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 #define SMOLCERT_PUB_KEY_LEN 32
+#define SMOLCERT_PRIV_KEY_LEN 64
 #define SMOLCERT_SIGNATURE_LEN 64
 
 #ifdef __cplusplus
@@ -47,7 +48,12 @@ typedef struct smolcert {
   sc_validity_t validity;
   sc_extension_t* extensions;
   size_t extensions_len;
-} smolcert_t;
+} smolcert_t, identity_t;
+
+typedef struct privateIdentity {
+  smolcert_t *identity;
+  uint8_t ed_priv_key[SMOLCERT_PRIV_KEY_LEN];
+} privateIdentity_t;
 
 // sc_parse_certificate deserializes a smolcert from the given byte buffer. It will only deserialize
 // and ensure a valid format. It will not do any validations.
