@@ -20,6 +20,8 @@ const uint8_t expected_cert_bytes_without_extension[] = {
 
 void test_Parsing_valid_smolcert(void);
 void test_ValidateCertificateSignature(void);
+void test_parseCertFromfile(void);
+void test_makeNoiseHandshake(void);
 
 void test_Parsing_valid_smolcert(void) {
   smolcert_t* cert = (smolcert_t*)malloc(sizeof(smolcert_t));
@@ -40,6 +42,7 @@ void test_Parsing_valid_smolcert(void) {
 
   sc_free_cert(cert);
 }
+
 
 void test_ValidateCertificateSignature(void) {
   smolcert_t* cert = (smolcert_t*)malloc(sizeof(smolcert_t));
@@ -62,12 +65,96 @@ void test_ValidateCertificateSignature(void) {
   sc_free_cert(cert);
 }
 
+
+uint8_t pubkey[] = {104,176,187,27,171,219,74,12,219,58,6,27,176,48,137,249,166,209,108,47,52,35,86,170,137,245,244,202,146,214,2,111};
+void test_parseCertFromfile(void){
+  smolcert_t* cert = (smolcert_t*)malloc(sizeof(smolcert_t));
+  FILE *fp;
+  u_int8_t* buf;
+  size_t bufSize;
+  
+  sc_error_t sc_err;
+
+  fp = fopen("smol.cert","rb");
+
+  if(fp == NULL){
+    TEST_ABORT();
+  }
+
+  fseek(fp,0,SEEK_END);
+  bufSize = ftell(fp);
+  rewind(fp);
+
+  buf = (u_int8_t*)malloc(bufSize);
+  fread(buf,1,bufSize,fp);
+ #ifdef FALSE 
+  u_int8_t* ioBuf = buf;
+  uint16_t i = 0;
+
+  while(i < bufSize){
+    if(i%16 == 0) printf("\n");
+    //printf("0x%02x ",*(ioBuf++));
+    printf("%d ",(uint8_t)*(ioBuf++));
+    //printf("%c ",(char)*(ioBuf++));
+    i++;
+  }
+  #endif
+  
+  sc_err = sc_parse_certificate(buf,bufSize, cert);
+  printf("Issuer: %s\n",cert->issuer);
+  printf("Subject: %s\n",cert->subject);
+
+  TEST_ASSERT_EQUAL(Sc_No_Error, sc_err);
+  //TEST_ASSERT_EQUAL_UINT8_ARRAY(pubkey, cert->public_key, 32);
+
+
+  free(buf);
+  fclose(fp);
+  sc_free_cert(cert);
+}
+
+void test_makeNoiseHandshake(void){
+  smolcert_t* cert = (smolcert_t*)malloc(sizeof(smolcert_t));
+  FILE *fp;
+  uint8_t* buf;
+  //uint8_t i = 0;
+  size_t bufSize;
+  
+  sc_error_t sc_err;
+  fp = fopen("smol.cert","rb");
+
+  if(fp == NULL){
+    TEST_ABORT();
+  }
+
+  fseek(fp,0,SEEK_END);
+  bufSize = ftell(fp);
+  rewind(fp);
+
+  buf = (u_int8_t*)malloc(bufSize);
+  fread(buf,1,bufSize,fp);
+  sc_err = sc_parse_certificate(buf,bufSize, cert);
+  TEST_ASSERT_EQUAL(Sc_No_Error, sc_err);
+  
+  //uint8_t edPubkey[32];
+
+  //sc_err = sc_get_curve_public_key(cert,edPubkey);
+  //printf("Pub: %x \n Ed: %x",cert->public_key,edPubkey);
+
+  TEST_ASSERT_EQUAL(Sc_No_Error, sc_err);
+  
+  TEST_ASSERT_EQUAL(1 , 1);
+
+}
+
 int main(void) {
     if (sodium_init() == -1) {
       return 1;
     }
     UNITY_BEGIN();
-    RUN_TEST(test_Parsing_valid_smolcert);
-    RUN_TEST(test_ValidateCertificateSignature);
+    //RUN_TEST(test_Parsing_valid_smolcert);
+    //RUN_TEST(test_ValidateCertificateSignature);
+    RUN_TEST(test_parseCertFromfile);
+    RUN_TEST(test_makeNoiseHandshake);
     return UNITY_END();
 }

@@ -68,6 +68,10 @@ sc_error_t sc_validate_certificate_signature(uint8_t* cert_buf, size_t cert_len,
 // inside the smolcert structure. You should never simply call 'free' on a smolcert as this poses
 // the danger of leaking memory.
 void sc_free_cert(smolcert_t* cert);
+sc_error_t sc_get_cert(void);
+sc_error_t sc_get_curve_public_key(identity_t* cert, uint8_t* curve_pub_key);
+sc_error_t sc_get_curve_private_key(privateIdentity_t* cert, uint8_t* curve_priv_key);
+sc_error_t sc_new_private_identity(identity_t* cert, uint8_t* priv_key, privateIdentity_t* priv_identity);
 
 #ifdef __cplusplus
 }
