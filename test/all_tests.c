@@ -21,7 +21,9 @@ const uint8_t expected_cert_bytes_without_extension[] = {
 void test_Parsing_valid_smolcert(void);
 void test_ValidateCertificateSignature(void);
 void test_parseCertFromfile(void);
-void test_makeNoiseHandshake(void);
+void test_convertEd25519PKtoCurve25519(void);
+
+void printKey(uint8_t* key, uint8_t keyLen);
 
 void test_Parsing_valid_smolcert(void) {
   smolcert_t* cert = (smolcert_t*)malloc(sizeof(smolcert_t));
@@ -113,15 +115,15 @@ void test_parseCertFromfile(void){
   sc_free_cert(cert);
 }
 
-void test_makeNoiseHandshake(void){
+void test_convertEd25519PKtoCurve25519(void){
   smolcert_t* cert = (smolcert_t*)malloc(sizeof(smolcert_t));
   FILE *fp;
   uint8_t* buf;
-  //uint8_t i = 0;
   size_t bufSize;
+  char testCert[] = "smol.cert"; 
   
   sc_error_t sc_err;
-  fp = fopen("smol.cert","rb");
+  fp = fopen(testCert,"rb");
 
   if(fp == NULL){
     TEST_ABORT();
@@ -134,27 +136,38 @@ void test_makeNoiseHandshake(void){
   buf = (u_int8_t*)malloc(bufSize);
   fread(buf,1,bufSize,fp);
   sc_err = sc_parse_certificate(buf,bufSize, cert);
-  TEST_ASSERT_EQUAL(Sc_No_Error, sc_err);
+  TEST_ASSERT_EQUAL_MESSAGE(Sc_No_Error, sc_err,"Error parsing the testcert");
   
-  //uint8_t edPubkey[32];
+  uint8_t edPubkey[32];
 
-  //sc_err = sc_get_curve_public_key(cert,edPubkey);
-  //printf("Pub: %x \n Ed: %x",cert->public_key,edPubkey);
-
-  TEST_ASSERT_EQUAL(Sc_No_Error, sc_err);
-  
-  TEST_ASSERT_EQUAL(1 , 1);
-
+  sc_err = sc_get_curve_public_key(cert,edPubkey);
+  TEST_ASSERT_EQUAL_MESSAGE(Sc_No_Error, sc_err,"Error getting curve from testcert");
+  printKey(edPubkey,32);
+  printKey(cert->public_key,32);
 }
+
+
+void printKey(uint8_t* key,uint8_t keyLen){
+  for(uint8_t i = 0; i < keyLen; i++)
+  {
+    if(i%16 == 0) printf("\n");
+    printf("%02x ",key[i]);
+    
+  }
+
+  printf("\n");
+  return;
+}
+
 
 int main(void) {
     if (sodium_init() == -1) {
       return 1;
     }
     UNITY_BEGIN();
-    //RUN_TEST(test_Parsing_valid_smolcert);
-    //RUN_TEST(test_ValidateCertificateSignature);
+    RUN_TEST(test_Parsing_valid_smolcert);
+    RUN_TEST(test_ValidateCertificateSignature);
     RUN_TEST(test_parseCertFromfile);
-    RUN_TEST(test_makeNoiseHandshake);
+    RUN_TEST(test_convertEd25519PKtoCurve25519);
     return UNITY_END();
 }
