@@ -148,11 +148,6 @@ void test_convertEd25519PKtoCurve25519(void){
   //TODO: validate converted public keys against testVector
   // TEST_ASSERT_EQUAL_ARRAY(edPubKey,edTestVector,"Converted pubKey does not match testvector");
 
-  sc_err = sc_get_curve_public_key(cert,edPubkey);
-  TEST_ASSERT_EQUAL_MESSAGE(Sc_No_Error, sc_err,"Error getting curve from testcert");
-  printKey(edPrivkey,32);
-  printKey(cert->,32);
-
   free(buf);
   fclose(fp);
   sc_free_cert(cert);
