@@ -27,7 +27,7 @@ void sc_free_cert(identity_t* cert) {
 
 sc_error_t sc_get_curve_public_key(identity_t* cert, uint8_t* curve_pub_key){
   
-  if(crypto_sign_ed25519_pk_to_curve25519(curve_pub_key,cert->public_key) != -1){
+  if(crypto_sign_ed25519_pk_to_curve25519(curve_pub_key,cert->public_key) != 0){
     return Sc_Unknown_Error;
   }
   return Sc_No_Error;
@@ -35,7 +35,7 @@ sc_error_t sc_get_curve_public_key(identity_t* cert, uint8_t* curve_pub_key){
 
 
 sc_error_t sc_get_curve_private_key(privateIdentity_t* cert, uint8_t* curve_priv_key){
-  if(crypto_sign_ed25519_sk_to_curve25519(curve_priv_key,cert->ed_priv_key) != -1){
+  if(crypto_sign_ed25519_sk_to_curve25519(curve_priv_key,cert->ed_priv_key) != 0){
     return Sc_Unknown_Error;
   }
   return Sc_No_Error;
