@@ -81,7 +81,7 @@ sc_error_t parse_extensions(CborValue *it, sc_extension_t** extensions, size_t* 
     return Sc_Invalid_Format;
   }
 
-  size_t arr_len;
+  size_t arr_len = 0;
   CborError err = cbor_value_get_array_length(it, &arr_len);
   if (arr_len == 0) {
     *extensions_len = 0;
@@ -115,7 +115,7 @@ sc_error_t parse_extension(CborValue *it, sc_extension_t* extension) {
     return Sc_Invalid_Format;
   }
 
-  size_t arr_len;
+  size_t arr_len = 0;
   cbor_value_get_array_length(it, &arr_len);
   if (arr_len != 3) {
     return Sc_Invalid_Format;
@@ -154,7 +154,7 @@ sc_error_t parse_validity(CborValue* it, sc_validity_t* validity) {
     return Sc_Invalid_Format;
   }
 
-  size_t arr_len;
+  size_t arr_len = 0;
   cbor_value_get_array_length(it, &arr_len);
   if (arr_len != 2) {
     return Sc_Invalid_Format;
