@@ -38,6 +38,7 @@ typedef struct sc_extension {
 } sc_extension_t;
 
 typedef struct smolcert {
+  uint64_t version;
   uint64_t serial_number;
   char* issuer;
   size_t issuer_len;

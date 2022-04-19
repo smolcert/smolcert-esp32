@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+const uint64_t smolcert_version = 1;
+
 sc_error_t expect_byte_string(CborValue *it, uint8_t** buf, size_t* buf_len);
 sc_error_t expect_fixed_length_bytes(CborValue* it, uint8_t* buf, size_t exp_buf_len);
 sc_error_t expect_string(CborValue* it, char** buf, size_t* buf_len);
@@ -25,7 +27,7 @@ sc_error_t sc_parse_certificate(const uint8_t* buffer, size_t size, smolcert_t* 
   }
   size_t arr_length = 0;
   cbor_value_get_array_length(&it, &arr_length);
-  if (arr_length != 7) {
+  if (arr_length != 8) {
     return Sc_Invalid_Format;
   }
 
@@ -33,6 +35,14 @@ sc_error_t sc_parse_certificate(const uint8_t* buffer, size_t size, smolcert_t* 
   CborValue array_it;
   err = cbor_value_enter_container(&it, &array_it);
   if (err) {
+    return Sc_Invalid_Format;
+  }
+
+  if ( (sc_err = expect_uint64_t(&array_it, &cert->version)) != Sc_No_Error) {
+    return sc_err;
+  }
+
+  if(cert->version != smolcert_version) {
     return Sc_Invalid_Format;
   }
 
